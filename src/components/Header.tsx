@@ -1,13 +1,18 @@
 import React from 'react';
-import { Grommet, Header, Anchor, Heading, Box, ResponsiveContext, Menu } from 'grommet';
+import { Grommet, Header, Anchor, Box, ResponsiveContext, Menu } from 'grommet';
 import { Target as GrommetIcon, Menu as MenuIcon } from 'grommet-icons';
-import { grommet } from 'grommet/themes';
+import { hpe } from 'grommet-theme-hpe';
 
 const HeaderPage = () => {
   return (
-    <Grommet theme={grommet}>
+    <Grommet theme={hpe}>
       <Header background='light-4' pad='medium' height='xsmall'>
-        <Heading level="2"><GrommetIcon size='large' color='brand' />  Juego de Arquería</Heading>
+        <Anchor
+          href="/"
+          size={'xxlarge'}
+          icon={<GrommetIcon size={"large"} color="brand" />}
+          label="Juego de Arquería"
+        />
         <ResponsiveContext.Consumer>
           {size =>
             size === 'small' ? (
@@ -19,17 +24,19 @@ const HeaderPage = () => {
                   items={[
                     {
                       label: <Box pad='small'>Código</Box>,
+                      href: '/code',
                     },
                     {
                       label: <Box pad='small'>Acerca de</Box>,
+                      href: '/about',
                     },
                   ]}
                 />
               </Box>
             ) : (
               <Box justify='end' direction='row' gap='medium'>
-                <Anchor href="#" label="Código Fuente" />
-                <Anchor href="#" label="Acerca de" />
+                <Anchor href='/code' label='Código Fuente' />
+                <Anchor href='/about' label='Acerca de' />
               </Box>
             )
           }
