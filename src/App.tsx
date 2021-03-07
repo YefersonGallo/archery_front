@@ -4,6 +4,7 @@ import Header from './components/Header';
 import InitSimulation from './components/InitSimulation';
 import Code from './components/Code';
 import About from './components/About';
+import 'semantic-ui-css/semantic.min.css';
 
 function App() {
   return (
@@ -11,13 +12,13 @@ function App() {
       <div className='App'>
         <Header />
         <Switch>
-          <Route exact path="/">
+          <Route exact path='/'>
             <InitSimulation />
           </Route>
-          <Route path="/code">
+          <Route path='/code'>
             <Code />
           </Route>
-          <Route exact path="/about">
+          <Route exact path='/about'>
             <About />
           </Route>
         </Switch>
