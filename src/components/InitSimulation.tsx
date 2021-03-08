@@ -2,8 +2,22 @@ import { Box, Grommet, Heading, Paragraph } from 'grommet';
 import { hpe as grommet } from 'grommet-theme-hpe';
 import { Icon, Step } from 'semantic-ui-react';
 import CreateTeams from './CreateTeams';
+import StartSimulation from './StartSimulation';
+import { useEffect, useState } from 'react';
 
 const InitSimulation = () => {
+  const [state, setState] = useState(0);
+  const [ping, setPing] = useState(0);
+  const [teams, setTeams] = useState<Array<{ name?: string, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>>([]);
+
+  useEffect(() => {
+    if (ping === 0) {
+      fetch('https://archery-back.herokuapp.com/ping')
+        .then(res => res.json());
+      setPing(1);
+    }
+  }, [ping]);
+
   return (
     <div>
       <Grommet theme={grommet}>
@@ -13,7 +27,7 @@ const InitSimulation = () => {
             la evolución de los personajes en términos de resistencia y experiencia</Paragraph>
           <Paragraph>Para inicar la simualción se deben seguir los pasos de abajo.</Paragraph>
           <Step.Group attached='top'>
-            <Step active>
+            <Step active={state === 0} completed={state > 0}>
               <Icon name='group' />
               <Step.Content>
                 <Step.Title>Equipos</Step.Title>
@@ -21,7 +35,7 @@ const InitSimulation = () => {
               </Step.Content>
             </Step>
 
-            <Step disabled>
+            <Step active={state === 1} completed={state > 1} disabled={state < 1}>
               <Icon name='payment' />
               <Step.Content>
                 <Step.Title>Juego</Step.Title>
@@ -29,7 +43,7 @@ const InitSimulation = () => {
               </Step.Content>
             </Step>
 
-            <Step disabled>
+            <Step active={state === 2} completed={state > 2} disabled={state < 2}>
               <Icon name='info' />
               <Step.Content>
                 <Step.Title>Estadísticas</Step.Title>
@@ -37,8 +51,15 @@ const InitSimulation = () => {
               </Step.Content>
             </Step>
           </Step.Group>
-          <div>
-            <CreateTeams />
+          <div hidden={state !== 0}>
+            <CreateTeams
+              start={(page: number, teams: Array<{ name?: string, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>) => {
+                setState(page);
+                setTeams(teams);
+              }} />
+          </div>
+          <div hidden={state !== 1}>
+            <StartSimulation team1={teams[0]} team2={teams[1]} />
           </div>
         </Box>
       </Grommet>

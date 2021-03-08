@@ -1,13 +1,20 @@
 import { Button, Card, Feed, Form, Icon, Input, Segment } from 'semantic-ui-react';
 import React, { useState } from 'react';
 
-const CreateTeams = () => {
+type Props = {
+  start: (page: number, teams: Array<{ name?: string, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>) => void
+}
+
+const CreateTeams = ({ start }: Props) => {
     const [name, setName] = useState('');
     const [flag, setFlag] = useState(true);
+    const [loading, setloading] = useState(false);
     const [teams, setTeams] = useState<Array<{ name?: string, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>>([]);
     const [teamsNumber, setTeamsNumber] = useState(1);
 
+
     const sendRequest = async () => {
+      setloading(true)
       setFlag(name !== '' ? true : false);
       if (name !== '') {
         const requestOptions = {
@@ -15,19 +22,19 @@ const CreateTeams = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: name }),
         };
-        const responseP = await fetch('http://localhost:5000/create_team', requestOptions);
+        const responseP = await fetch('https://archery-back.herokuapp.com/create_team', requestOptions);
         const res = await responseP.json();
         setTeams(teams.concat(res));
         setName('');
         setTeamsNumber(teamsNumber + 1);
-      }
-      ;
+      };
+      setloading(false)
     };
 
     return (
       <Segment size={'huge'}>
-        <Card.Group stackable>
-          <Card >
+        <Card.Group centered>
+          <Card>
             <Card.Content>
               <Icon name='group' />
               <Card.Header>Crear Equipo</Card.Header>
@@ -48,23 +55,25 @@ const CreateTeams = () => {
 
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value.toString())}
                 />
-                <Button disabled={teamsNumber >= 3} type='submit' color={'green'} onClick={sendRequest}>Crear</Button>
+                <Button disabled={teamsNumber >= 3} type='submit' color={'green'} onClick={sendRequest} loading={loading}>Crear</Button>
               </Form>
             </Card.Content>
           </Card>
+        </Card.Group>
+        <Card.Group stackable>
           {
-            teams.map((team) => {
+            teams.map((team, i) => {
               return (
-                <Card>
+                <Card key={i}>
                   <Card.Content>
                     <Card.Header>{team.name}</Card.Header>
                   </Card.Content>
                   <Card.Content>
                     <Feed>
                       {
-                        team.players?.map((player) => {
+                        team.players?.map((player, x) => {
                           return (
-                            <Feed.Event>
+                            <Feed.Event key={x}>
                               <Feed.Label icon={player.gender === 'male' ? 'mars stroke' : 'venus'} />
                               <Feed.Content>
                                 <Feed.Summary>
@@ -82,7 +91,10 @@ const CreateTeams = () => {
             })
           }
         </Card.Group>
-        <Button className="button-init" size={"large"} disabled={teamsNumber < 3} >Iniciar Juego</Button>
+        <Card.Group centered>
+          <Button className='button-init' size={'large'} disabled={teamsNumber < 3}
+                  onClick={() => start(1, teams)}>Siguiente</Button>
+        </Card.Group>
       </Segment>
     );
   }
