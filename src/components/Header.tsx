@@ -8,12 +8,14 @@ const HeaderPage = () => {
   return (
     <Grommet theme={hpe}>
       <Header background='light-4' pad='medium' height='xsmall'>
-        <Anchor
-          href='/'
-          size={'xxlarge'}
-          icon={<GrommetIcon size={'large'} color='brand' />}
-          label='Juego de Arquería'
-        />
+        <Link to='/'>
+          <Anchor
+            href='#'
+            size={'xxlarge'}
+            icon={<GrommetIcon size={'large'} color='brand' />}
+            label='Juego de Arquería'
+          />
+        </Link>
         <Box justify='end' direction='row' gap='medium'>
           <Link to='/code'>
             <Anchor href='#' label='Código Fuente' />

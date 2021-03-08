@@ -1,6 +1,7 @@
 import { Box, Grommet, Heading, Paragraph } from 'grommet';
 import { hpe as grommet } from 'grommet-theme-hpe';
 import { Icon, Step } from 'semantic-ui-react';
+import CreateTeams from './CreateTeams';
 
 const InitSimulation = () => {
   return (
@@ -36,6 +37,9 @@ const InitSimulation = () => {
               </Step.Content>
             </Step>
           </Step.Group>
+          <div>
+            <CreateTeams />
+          </div>
         </Box>
       </Grommet>
     </div>
