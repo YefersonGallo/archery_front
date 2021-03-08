@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import './App.css';
 import Header from './components/Header';
 import InitSimulation from './components/InitSimulation';
 import Code from './components/Code';
