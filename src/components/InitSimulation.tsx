@@ -1,6 +1,6 @@
 import { Box, Grommet, Heading, Paragraph } from 'grommet';
 import { hpe as grommet } from 'grommet-theme-hpe';
-import { Icon, Step } from 'semantic-ui-react';
+import { Icon, SemanticCOLORS, Step } from 'semantic-ui-react';
 import CreateTeams from './CreateTeams';
 import StartSimulation from './StartSimulation';
 import { useEffect, useState } from 'react';
@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 const InitSimulation = () => {
   const [state, setState] = useState(0);
   const [ping, setPing] = useState(0);
-  const [teams, setTeams] = useState<Array<{ name?: string, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>>([]);
+  const [teams, setTeams] = useState<Array<{ name?: string, color:SemanticCOLORS, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>>([]);
 
   useEffect(() => {
     if (ping === 0) {
@@ -36,7 +36,7 @@ const InitSimulation = () => {
             </Step>
 
             <Step active={state === 1} completed={state > 1} disabled={state < 1}>
-              <Icon name='payment' />
+              <Icon name='flag checkered' />
               <Step.Content>
                 <Step.Title>Juego</Step.Title>
                 <Step.Description>Inicio de los 1000 juegos</Step.Description>
@@ -44,7 +44,7 @@ const InitSimulation = () => {
             </Step>
 
             <Step active={state === 2} completed={state > 2} disabled={state < 2}>
-              <Icon name='info' />
+              <Icon name='chart bar outline' />
               <Step.Content>
                 <Step.Title>Estadísticas</Step.Title>
                 <Step.Description>Resultados luego de los 1000 juegos</Step.Description>
@@ -53,7 +53,7 @@ const InitSimulation = () => {
           </Step.Group>
           <div hidden={state !== 0}>
             <CreateTeams
-              start={(page: number, teams: Array<{ name?: string, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>) => {
+              start={(page: number, teams: Array<{ name: string, color:SemanticCOLORS, players: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>) => {
                 setState(page);
                 setTeams(teams);
               }} />
