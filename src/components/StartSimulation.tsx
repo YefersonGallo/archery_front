@@ -4,16 +4,19 @@ import React, { useState } from 'react';
 type Props = {
   team1: { name?: string, color: SemanticCOLORS, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }
   team2: { name?: string, color: SemanticCOLORS, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }
+  next: (page: number) => void
 }
 
-const StartSimulation = ({ team1, team2 }: Props) => {
+const StartSimulation = ({ team1, team2, next }: Props) => {
   const [panels, setPanels] = useState<Array<any>>([]);
   const [buttonName, setButtonName] = useState('Iniciar Juegos');
   const [button, setButton] = useState(false);
+  const [view, setView] = useState(true);
 
   const initSimulation = async () => {
     setPanels([]);
     setButton(true);
+    setView(true);
     for (let i = 1; i <= 5; i++) {
       setButtonName(`Juego ${i}`);
       const requestOptions = {
@@ -30,6 +33,7 @@ const StartSimulation = ({ team1, team2 }: Props) => {
       setButtonName('Iniciar Juegos');
     }
     setButton(false);
+    setView(false);
   };
 
   const add_panel = (panel: any) => {
@@ -39,10 +43,14 @@ const StartSimulation = ({ team1, team2 }: Props) => {
   return (
     <Segment size={'massive'}>
       <Card.Group centered>
-        <Button className='button-init' disabled={button} size={'large'}
+        <Button className='button-init' color={'blue'} disabled={button} size={'large'}
                 onClick={() => initSimulation()}>{buttonName}</Button>
+        <div hidden={view}>
+          <Button className='button-init' color={'blue'} disabled={button} size={'large'}
+                  onClick={() => next(2)}>Ver Aplicaciones</Button>
+        </div>
       </Card.Group>
-      <Card.Group stackable>
+      <Card.Group stackable centered>
         {
           panels.map((panel, i) => {
             return (

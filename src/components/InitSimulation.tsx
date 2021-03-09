@@ -8,14 +8,17 @@ import { useEffect, useState } from 'react';
 const InitSimulation = () => {
   const [state, setState] = useState(0);
   const [ping, setPing] = useState(0);
-  const [teams, setTeams] = useState<Array<{ name?: string, color:SemanticCOLORS, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>>([]);
+  const [teams, setTeams] = useState<Array<{ name?: string, color: SemanticCOLORS, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>>([]);
+
 
   useEffect(() => {
-    if (ping === 0) {
-      fetch('https://archery-back.herokuapp.com/ping')
-        .then(res => res.json());
-      setPing(1);
-    }
+    const resPing = async () => {
+      if (ping < 3) {
+        await fetch('https://archery-back.herokuapp.com/ping');
+        setPing(prevState => prevState++);
+      }
+    };
+    resPing();
   }, [ping]);
 
   return (
@@ -53,13 +56,13 @@ const InitSimulation = () => {
           </Step.Group>
           <div hidden={state !== 0}>
             <CreateTeams
-              start={(page: number, teams: Array<{ name: string, color:SemanticCOLORS, players: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>) => {
+              start={(page: number, teams: Array<{ name: string, color: SemanticCOLORS, players: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>) => {
                 setState(page);
                 setTeams(teams);
               }} />
           </div>
           <div hidden={state !== 1}>
-            <StartSimulation team1={teams[0]} team2={teams[1]} />
+            <StartSimulation team1={teams[0]} team2={teams[1]} next={(page: number) => setState(page)} />
           </div>
         </Box>
       </Grommet>
