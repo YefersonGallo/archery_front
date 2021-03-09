@@ -18,7 +18,7 @@ const StartSimulation = ({ team1, team2, next }: Props) => {
     setPanels([]);
     setButton(true);
     setView(true);
-    for (let i = 1; i <= 3; i++) {
+    for (let i = 1; i <= 1000; i++) {
       setButtonName(`Juego ${i}`);
       const requestOptions = {
         method: 'POST',
