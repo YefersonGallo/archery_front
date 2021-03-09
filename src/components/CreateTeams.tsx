@@ -8,13 +8,13 @@ type Props = {
 const CreateTeams = ({ start }: Props) => {
     const [name, setName] = useState('');
     const [flag, setFlag] = useState(true);
-    const [loading, setloading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [teams, setTeams] = useState<Array<{ name: string, color: SemanticCOLORS, players: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>>([]);
     const [teamsNumber, setTeamsNumber] = useState(1);
     const colors: Array<SemanticCOLORS> = ['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey'];
 
     const sendRequest = async () => {
-      setloading(true);
+      setLoading(true);
       setFlag(name !== '' ? true : false);
       if (name !== '') {
         const index = Math.round(Math.random() * colors.length - 1);
@@ -24,15 +24,15 @@ const CreateTeams = ({ start }: Props) => {
           body: JSON.stringify({ name: name, color: colors[index] }),
         };
         delete colors[index];
-        //const responseP = await fetch('http://localhost:5000/create_team', requestOptions);
-        const responseP = await fetch('https://archery-back.herokuapp.com/create_team', requestOptions);
+        //const responseP = await fetch('https://archery-back.herokuapp.com/create_team', requestOptions);
+        const responseP = await fetch('http://localhost:5000/create_team', requestOptions);
         const res = await responseP.json();
         setTeams(teams.concat(res));
         setName('');
         setTeamsNumber(teamsNumber + 1);
       }
       ;
-      setloading(false);
+      setLoading(false);
     };
 
     return (
@@ -56,7 +56,6 @@ const CreateTeams = ({ start }: Props) => {
                   value={name}
                   label='Nombre del Equipo'
                   placeholder='Ingrese el nombre del equipo'
-
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value.toString())}
                 />
                 <Button disabled={teamsNumber >= 3} type='submit' color={'green'} onClick={sendRequest}
