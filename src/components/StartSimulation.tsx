@@ -25,9 +25,14 @@ const StartSimulation = ({ team1, team2, next }: Props) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ team1, team2, i }),
       };
-      let responseP = await fetch('https://archery-back.herokuapp.com/play_game', requestOptions);
-      while (!responseP.ok){
+      let responseP
+      try{
         responseP = await fetch('https://archery-back.herokuapp.com/play_game', requestOptions);
+      }catch (e) {
+        responseP = await fetch('https://archery-back.herokuapp.com/play_game', requestOptions);
+        while (!responseP.ok){
+          responseP = await fetch('https://archery-back.herokuapp.com/play_game', requestOptions);
+        }
       }
       const res = await responseP.json();
       team1 = res.team_1;
