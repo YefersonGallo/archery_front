@@ -4,6 +4,7 @@ import { Icon, SemanticCOLORS, Step } from 'semantic-ui-react';
 import CreateTeams from './CreateTeams';
 import StartSimulation from './StartSimulation';
 import { useEffect, useState } from 'react';
+import Statistics from './Statistics';
 
 const InitSimulation = () => {
   const [state, setState] = useState(0);
@@ -63,6 +64,9 @@ const InitSimulation = () => {
           </div>
           <div hidden={state !== 1}>
             <StartSimulation team1={teams[0]} team2={teams[1]} next={(page: number) => setState(page)} />
+          </div>
+          <div hidden={state !== 2}>
+            <Statistics />
           </div>
         </Box>
       </Grommet>

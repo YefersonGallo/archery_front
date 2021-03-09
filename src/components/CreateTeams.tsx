@@ -24,7 +24,8 @@ const CreateTeams = ({ start }: Props) => {
           body: JSON.stringify({ name: name, color: colors[index] }),
         };
         delete colors[index];
-        const responseP = await fetch('https://archery-back.herokuapp.com/create_team', requestOptions);
+        //const responseP = await fetch('https://archery-back.herokuapp.com/create_team', requestOptions);
+        const responseP = await fetch('http://localhost:5000/create_team', requestOptions);
         const res = await responseP.json();
         setTeams(teams.concat(res));
         setName('');
