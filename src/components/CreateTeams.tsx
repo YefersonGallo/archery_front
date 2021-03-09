@@ -25,7 +25,6 @@ const CreateTeams = ({ start }: Props) => {
         };
         delete colors[index];
         const responseP = await fetch('https://archery-back.herokuapp.com/create_team', requestOptions);
-        //const responseP = await fetch('http://localhost:5000/create_team', requestOptions);
         const res = await responseP.json();
         setTeams(teams.concat(res));
         setName('');
@@ -78,7 +77,7 @@ const CreateTeams = ({ start }: Props) => {
                         team.players?.map((player, x) => {
                           return (
                             <Feed.Event key={x}>
-                              <Feed.Label icon={player.gender === 'male' ? 'mars stroke' : 'venus'} />
+                              <Feed.Label icon={player.gender === 'male' ? 'mars' : 'venus'} />
                               <Feed.Content>
                                 <Feed.Summary>
                                   Integrante {player.id}

@@ -11,15 +11,11 @@ const InitSimulation = () => {
   const [ping, setPing] = useState(0);
   const [teams, setTeams] = useState<Array<{ name?: string, color: SemanticCOLORS, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>>([]);
 
-
   useEffect(() => {
-    const resPing = async () => {
-      if (ping < 3) {
-        await fetch('https://archery-back.herokuapp.com/ping');
-        setPing(prevState => prevState++);
-      }
-    };
-    resPing();
+    if (ping === 0) {
+      fetch('https://archery-back.herokuapp.com/ping').then(r => r);
+      setPing(1);
+    }
   }, [ping]);
 
   return (
@@ -29,7 +25,7 @@ const InitSimulation = () => {
           <Heading level='1' size='medium'>Simulación de un Juego de Arquería usando el método de Montecarlo</Heading>
           <Paragraph>El objetivo de esta simulación, es enfrentar a dos equipos durante 1000 juegos, teniendo en cuenta
             la evolución de los personajes en términos de resistencia y experiencia</Paragraph>
-          <Paragraph>Para inicar la simualción se deben seguir los pasos de abajo.</Paragraph>
+          <Paragraph>Para inicar la simulación se deben seguir los pasos de abajo.</Paragraph>
           <Step.Group attached='top'>
             <Step active={state === 0} completed={state > 0}>
               <Icon name='group' />
@@ -63,10 +59,12 @@ const InitSimulation = () => {
               }} />
           </div>
           <div hidden={state !== 1}>
-            <StartSimulation team1={teams[0]} team2={teams[1]} next={(page: number) => setState(page)} />
+            <StartSimulation team1={teams[0]} team2={teams[1]} next={(page: number, stats: any) => {
+              setState(page);
+            }} />
           </div>
           <div hidden={state !== 2}>
-            <Statistics />
+            <Statistics page={state} />
           </div>
         </Box>
       </Grommet>
