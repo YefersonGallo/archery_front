@@ -1,34 +1,38 @@
-import { Button, Card, Feed, Form, Icon, Input, Segment } from 'semantic-ui-react';
+import { Button, Card, Feed, Form, Icon, Input, Segment, SemanticCOLORS } from 'semantic-ui-react';
 import React, { useState } from 'react';
 
 type Props = {
-  start: (page: number, teams: Array<{ name?: string, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>) => void
+  start: (page: number, teams: Array<{ name: string, color: SemanticCOLORS, players: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>) => void
 }
 
 const CreateTeams = ({ start }: Props) => {
     const [name, setName] = useState('');
     const [flag, setFlag] = useState(true);
     const [loading, setloading] = useState(false);
-    const [teams, setTeams] = useState<Array<{ name?: string, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>>([]);
+    const [teams, setTeams] = useState<Array<{ name: string, color: SemanticCOLORS, players: Array<{ 'endurance': number, 'gender': string, 'id': number }> }>>([]);
     const [teamsNumber, setTeamsNumber] = useState(1);
-
+    const colors: Array<SemanticCOLORS> = ['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey'];
 
     const sendRequest = async () => {
-      setloading(true)
+      setloading(true);
       setFlag(name !== '' ? true : false);
       if (name !== '') {
+        const index = Math.round(Math.random() * colors.length - 1);
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: name }),
+          body: JSON.stringify({ name: name, color: colors[index] }),
         };
+        delete colors[index];
+        //const responseP = await fetch('http://localhost:5000/create_team', requestOptions);
         const responseP = await fetch('https://archery-back.herokuapp.com/create_team', requestOptions);
         const res = await responseP.json();
         setTeams(teams.concat(res));
         setName('');
         setTeamsNumber(teamsNumber + 1);
-      };
-      setloading(false)
+      }
+      ;
+      setloading(false);
     };
 
     return (
@@ -55,7 +59,8 @@ const CreateTeams = ({ start }: Props) => {
 
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value.toString())}
                 />
-                <Button disabled={teamsNumber >= 3} type='submit' color={'green'} onClick={sendRequest} loading={loading}>Crear</Button>
+                <Button disabled={teamsNumber >= 3} type='submit' color={'green'} onClick={sendRequest}
+                        loading={loading}>Crear</Button>
               </Form>
             </Card.Content>
           </Card>
@@ -64,7 +69,7 @@ const CreateTeams = ({ start }: Props) => {
           {
             teams.map((team, i) => {
               return (
-                <Card key={i}>
+                <Card color={team.color} key={i}>
                   <Card.Content>
                     <Card.Header>{team.name}</Card.Header>
                   </Card.Content>

@@ -1,9 +1,9 @@
-import { Button, Card, Segment } from 'semantic-ui-react';
+import { Button, Card, Feed, Segment, SemanticCOLORS } from 'semantic-ui-react';
 import React, { useState } from 'react';
 
 type Props = {
-  team1: { name?: string, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }
-  team2: { name?: string, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }
+  team1: { name?: string, color: SemanticCOLORS, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }
+  team2: { name?: string, color: SemanticCOLORS, players?: Array<{ 'endurance': number, 'gender': string, 'id': number }> }
 }
 
 const StartSimulation = ({ team1, team2 }: Props) => {
@@ -12,10 +12,9 @@ const StartSimulation = ({ team1, team2 }: Props) => {
   const [button, setButton] = useState(false);
 
   const initSimulation = async () => {
-    restart_panels();
     setPanels([]);
     setButton(true);
-    for (let i = 1; i <= 1000; i++) {
+    for (let i = 1; i <= 5; i++) {
       setButtonName(`Juego ${i}`);
       const requestOptions = {
         method: 'POST',
@@ -27,38 +26,51 @@ const StartSimulation = ({ team1, team2 }: Props) => {
       const res = await responseP.json();
       team1 = res.team_1;
       team2 = res.team_2;
-      console.log(res);
-      console.log(buttonName);
-      add_panel(i);
+      add_panel(res);
+      setButtonName('Iniciar Juegos');
     }
     setButton(false);
   };
 
-  const add_panel = (panel: number) => {
-    panels.push(panel);
-    let aux = panels.slice(0, panels.length - 1);
-    setPanels(aux.concat(panel));
-  };
-
-  const restart_panels = () => {
-    setPanels([]);
-    setButtonName('Iniciar Juegos');
-    setButton(false);
+  const add_panel = (panel: any) => {
+    setPanels(prevState => prevState.concat(panel));
   };
 
   return (
-    <Segment size={'huge'}>
+    <Segment size={'massive'}>
       <Card.Group centered>
         <Button className='button-init' disabled={button} size={'large'}
                 onClick={() => initSimulation()}>{buttonName}</Button>
-        <Button className='button-init' size={'large'} onClick={() => {
-          restart_panels();
-        }}>Borrar Juegos</Button>
       </Card.Group>
-      <Card.Group itemsPerRow={6}>
+      <Card.Group stackable>
         {
-          panels.map((panel) => {
-            return (<Card key={panel}>{panel}</Card>);
+          panels.map((panel, i) => {
+            return (
+              <Card key={i} color={panel['team_win'].color}>
+                <Card.Content>
+                  <Card.Header>Equipo Ganador: {panel['team_win'].name}</Card.Header>
+                </Card.Content>
+                <Card.Content>
+                  <Feed>
+                    <Feed.Event>
+                      <Feed.Label icon={panel['winner'].gender === 'male' ? 'mars stroke' : 'venus'} />
+                      <Feed.Content>
+                        <Feed.Summary>
+                          Ganador individual: Jugador {panel['winner'].id} del equipo {panel['winner'].team}
+                        </Feed.Summary>
+                      </Feed.Content>
+                    </Feed.Event>
+                    <Feed.Event>
+                      <Feed.Label icon={panel['lucky'].gender === 'male' ? 'mars stroke' : 'venus'} />
+                      <Feed.Content>
+                        <Feed.Summary>
+                          Jugador con más suerte: Jugador {panel['lucky'].id} del equipo {panel['lucky'].team}
+                        </Feed.Summary>
+                      </Feed.Content>
+                    </Feed.Event>
+                  </Feed>
+                </Card.Content>
+              </Card>);
           })
         }
       </Card.Group>
